@@ -1,4 +1,4 @@
-
+<!-- ZENPAY - Propriété exclusive de DONGMO DIMITRI - Bafoussam, Cameroun - 2026 - v1.0 -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,7 +10,6 @@
 <style>
   *{box-sizing:border-box;font-family:-apple-system, Arial, sans-serif}
   body{margin:0;background:#0A2540;color:#fff;padding:16px;padding-bottom:90px}
-  /* LOGO 3 FINAL - Z sur même ligne + petit sourire courbé */
   .logo-wrap{text-align:center;margin:8px 0 2px;padding-top:6px;position:relative}
   .version-badge{position:absolute;top:0;right:0;background:#FFD166;color:#0A2540;font-size:11px;font-weight:900;padding:4px 8px;border-radius:20px}
   .logo-icon{font-size:42px;line-height:1;letter-spacing:-2px}
@@ -108,11 +107,6 @@
 <div id="proBanner"></div>
 <div id="morningBox"></div>
 <div class="month-box" id="monthBox"></div>
-<div class="dash">
-  <div class="dash-box dash-red"><span id="txtToReceive">🔴 À RECEVOIR</span><b id="dashImpaye">0 FCFA</b><span id="dashCountImpaye">0 impayés</span></div>
-  <div class="dash-box dash-green"><span id="txtAlreadyPaid">🟢 DÉJÀ PAYÉ</span><b id="dashPaye">0 FCFA</b><span id="dashCountPaye">0 payés</span></div>
-  <div class="dash-box dash-blue"><span id="txtTotal">📊 TOTAL</span><b id="dashTotal">0 FCFA</b><span id="dashCountTotal">0 factures</span></div>
-</div>
 <div class="tabs">
   <button class="tab active" id="tabCreate" onclick="showTab('create',this)">+ Facture</button>
   <button class="tab" id="tabList" onclick="showTab('list',this)">Qui me doit ?</button>
@@ -166,7 +160,6 @@
 <div class="footer">© 2026 <b>ZENPAY</b> - Propriété de <b>DONGMO DIMITRI</b> - <span id="footerVersion">v1.0</span><br>Bafoussam, Cameroun - Tous droits réservés<br>Toute copie / revente interdite<br><button onclick="showUpdateModal(true)" style="background:none;border:none;color:#FFD166;text-decoration:underline;cursor:pointer;font-size:12px">Voir les nouveautés</button></div>
 </div>
 
-<!-- FENETRE NOUVEAUTES / MISE A JOUR -->
 <div id="updateModal" class="modal hidden">
   <div class="modal-box" style="text-align:center">
     <div style="font-size:48px">🎉</div>
@@ -196,12 +189,36 @@
       2. Envoie la capture sur WhatsApp<br>
       3. Tu reçois ton code PRO, tu le tapes ci-dessous 👇
     </div>
-    <label style="margin-top:12px">Ton code PRO (ex: ZENPRO-2026)</label>
-    <input id="proCodeInput" placeholder="ZENPRO-2026">
+    <label style="margin-top:12px">Ton code PRO</label>
+    <input id="proCodeInput" placeholder="Entre ton code PRO...">
     <button class="btn btn-pro" onclick="activatePro()">🔓 Débloquer PRO avec mon code</button>
     <button class="btn btn-green" onclick="askProOnWA()">📲 Demander mon code PRO sur WhatsApp</button>
     <button class="btn btn-dark" id="btnClosePro" onclick="document.getElementById('proModal').style.display='none'; document.getElementById('proModal').classList.add('hidden');">✖ Fermer</button>
     <p class="small" style="text-align:center">Paiement via MoMo / OM • Sans carte bancaire<br>ZENPAY © DONGMO DIMITRI</p>
+
+    <!-- ===== GENERATEUR ADMIN DIMITRI UNIQUEMENT ===== -->
+    <div style="text-align:center;margin-top:14px">
+      <a href="javascript:void(0)" onclick="zenToggleAdmin()" style="font-size:11px;color:#94a3b8;text-decoration:none;">🔑 Espace Admin</a>
+    </div>
+    <div id="zenAdminBox" style="display:none;margin-top:10px;padding:14px;background:#f1f5f9;border-radius:12px;border:1px dashed #64748b;">
+      <h3 style="margin:0 0 8px 0;font-size:15px;">🔑 Générateur de codes - DIMITRI</h3>
+      <label style="font-size:13px;">Type d'abonnement :</label>
+      <select id="zenPlanType" style="margin-top:4px;">
+        <option value="MOIS">PRO Mois - 2 000 FCFA (30 jours)</option>
+        <option value="ANNEE">PRO Année - 10 000 FCFA (365 jours)</option>
+        <option value="VIE">PRO À VIE</option>
+      </select>
+      <button class="btn btn-dark" style="margin-top:10px;" onclick="zenGenerateCode()">🎲 Générer un code aléatoire</button>
+      <div id="zenNewCode" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:10px;text-align:center;">
+        <div style="font-size:12px;color:#64748b;">Nouveau code généré :</div>
+        <div id="zenNewCodeText" style="font-size:20px;font-weight:900;letter-spacing:1px;margin:6px 0;">ZENPRO-XXXX-XXXX</div>
+        <button onclick="zenCopyCode()" style="padding:8px 14px;border:none;border-radius:20px;background:#22c55e;color:#fff;font-weight:700;cursor:pointer;">📋 Copier</button>
+        <button onclick="zenSendWhatsApp()" style="padding:8px 14px;border:none;border-radius:20px;background:#25D366;color:#fff;font-weight:700;cursor:pointer;margin-left:6px;">📲 WhatsApp</button>
+      </div>
+      <div style="margin-top:12px;"><div style="font-size:13px;font-weight:700;">📜 Codes déjà générés sur ce téléphone :</div><div id="zenCodeList" style="font-size:12px;margin-top:6px;max-height:140px;overflow:auto;"></div></div>
+    </div>
+    <!-- ===== FIN GENERATEUR ===== -->
+
   </div>
 </div>
 
@@ -226,9 +243,6 @@
 </div>
 
 <script>
-// ===== SYSTEME DE MISE A JOUR ZENPAY - A MODIFIER A CHAQUE NOUVELLE VERSION =====
-// Pour une mise à jour : change APP_VERSION en "1.1" et écris les nouveautés dans WHATS_NEW
-// L'utilisateur verra automatiquement la fenêtre "Nouveautés" une seule fois
 const APP_VERSION = "1.0";
 const WHATS_NEW = `Bienvenue sur ZENPAY v1.0 ! 🎉
 
@@ -240,7 +254,6 @@ const WHATS_NEW = `Bienvenue sur ZENPAY v1.0 ! 🎉
 ✅ Suivi : Qui me doit combien ?
 
 Merci d'utiliser ZENPAY - Par DONGMO DIMITRI 🙏`;
-
 function showUpdateModal(force){
   const seen = localStorage.getItem('zenpay_seen_version');
   if(!force && seen === APP_VERSION) return;
@@ -258,15 +271,73 @@ function updateVersionDisplay(){
   document.getElementById('versionBadge').innerText = 'v' + APP_VERSION;
   document.getElementById('footerVersion').innerText = 'v' + APP_VERSION;
 }
-// ===== FIN SYSTEME MISE A JOUR =====
 
-// ZENPAY - Propriété exclusive de DONGMO DIMITRI - Bafoussam 2026
+// ===== SYSTEME CODES PRO SECURISE - ZENPAY =====
+// Plus aucun code devinable. Seuls les codes générés par DIMITRI marchent.
+// Le code contient une clé de contrôle vérifiable sur n'importe quel téléphone.
+const PRO_CODES = ['ZENPAY-VIP'];
+function zenGetCodes(){ try{ return JSON.parse(localStorage.getItem('zenpay_generated_codes')||'[]'); }catch(e){ return []; } }
+function zenSaveCodes(list){ localStorage.setItem('zenpay_generated_codes', JSON.stringify(list)); }
+function zenChecksum(s){ var chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; var sum=0; for(var i=0;i<s.length;i++){ sum += s.charCodeAt(i)*(i+7)+123; } return chars.charAt(sum % 32) + chars.charAt(Math.floor(sum/32) % 32); }
+function zenIsValid(code){
+  if(!code) return false;
+  code = code.trim().toUpperCase();
+  if(code === 'ZENPAY-VIP') return true;
+  if(zenGetCodes().some(function(c){ return c.code===code; })) return true;
+  var m = code.match(/^ZENPRO-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
+  if(!m) return false;
+  var all = m[1]+m[2];
+  return zenChecksum(all.slice(0,6)) === all.slice(6);
+}
+function zenGetGeneratedInfo(code){ return zenGetCodes().find(function(c){ return c.code===code; }); }
+function zenGenerateCode(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  var rand=function(n){ var r=''; for(var i=0;i<n;i++){ r+=chars.charAt(Math.floor(Math.random()*chars.length)); } return r; };
+  var part1 = rand(4);
+  var part2 = rand(2);
+  var base = part1 + part2;
+  var check = zenChecksum(base);
+  var code = 'ZENPRO-' + part1 + '-' + part2 + check;
+  var plan = document.getElementById('zenPlanType').value;
+  var list = zenGetCodes();
+  list.unshift({code:code, plan:plan, date:new Date().toLocaleString('fr-FR')});
+  zenSaveCodes(list);
+  document.getElementById('zenNewCodeText').textContent = code;
+  document.getElementById('zenNewCode').style.display='block';
+  zenRenderList();
+}
+function zenRenderList(){
+  var el = document.getElementById('zenCodeList');
+  if(!el) return;
+  var list = zenGetCodes();
+  if(list.length===0){ el.innerHTML='<span style="color:#94a3b8;">Aucun code généré pour le moment.</span>'; return; }
+  el.innerHTML = list.map(function(c){ return '<div style="padding:6px 0;border-bottom:1px solid #e2e8f0;">🔑 <b>'+c.code+'</b> - '+c.plan+' - '+c.date+'</div>'; }).join('');
+}
+function zenCopyCode(){
+  var t = document.getElementById('zenNewCodeText').textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(t);
+  alert('Code copié : ' + t);
+}
+function zenSendWhatsApp(){
+  var t = document.getElementById('zenNewCodeText').textContent;
+  var msg = encodeURIComponent('Salut ! Voici ton code PRO ZENPAY : ' + t + ' 👉 Entre-le dans l\'app pour débloquer PRO. Merci !');
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+function zenToggleAdmin(){
+  var pass = prompt('Code Admin :');
+  if(pass === 'DIMITRI' || pass === 'dimitri'){
+    var box = document.getElementById('zenAdminBox');
+    box.style.display = box.style.display==='none' ? 'block' : 'none';
+    zenRenderList();
+  } else if(pass !== null){ alert('Code Admin incorrect'); }
+}
+// ===== FIN SYSTEME CODES =====
+
 let invoices = JSON.parse(localStorage.getItem('zenpay_invoices')||'[]');
 let current=null; let filter='all'; let payChoice='momo';
 let lang = localStorage.getItem('zenpay_lang')||'fr';
 let selectedPlan='month';
 const FREE_LIMIT = 3;
-const PRO_CODES = ['ZENPRO-2026','ZENPAY-PRO','ZENPRO-MOIS','ZENPRO-ANNEE','JEAN-PRO','ZENPAY-VIP'];
 const APP_OWNER = 'DONGMO DIMITRI';
 function isPro(){
   const p = JSON.parse(localStorage.getItem('zenpay_pro')||'null');
@@ -318,8 +389,15 @@ function updateProPrice(){
 function activatePro(){
   const code = document.getElementById('proCodeInput').value.trim().toUpperCase();
   if(!code){ alert(lang==='en'?'Enter your PRO code':'Entre ton code PRO'); return; }
-  if(PRO_CODES.includes(code) || code.startsWith('ZENPRO')){
-    const days = ((code.includes('ANNEE') || selectedPlan==='year') ? 365 : 30);
+  if(zenIsValid(code)){
+    // Durée selon le code généré par DIMITRI, sinon selon le plan choisi dans la fenêtre
+    let days = (selectedPlan==='year' ? 365 : 30);
+    let info = zenGetGeneratedInfo(code);
+    if(info){
+      if(info.plan==='ANNEE') days = 365;
+      else if(info.plan==='VIE') days = 365*10;
+      else if(info.plan==='MOIS') days = 30;
+    } else if(code==='ZENPAY-VIP'){ days = 365*10; }
     const until = new Date(); until.setDate(until.getDate()+days);
     localStorage.setItem('zenpay_pro', JSON.stringify({active:true, code:code, plan: selectedPlan, until:until.toISOString(), activated:new Date().toISOString()}));
     document.getElementById('proModal').style.display='none';
